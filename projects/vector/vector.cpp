@@ -43,7 +43,7 @@ vector& vector::operator=(vector&& v){
 
 ostream& operator<<(ostream& os, const vector& v){
     for(int i=0; i<v.size(); i++){
-        os << v.get(i) << " ";
+        os << v[i] << " ";
     }
     os << "\n";
     return os;

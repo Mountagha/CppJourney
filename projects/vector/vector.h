@@ -16,9 +16,8 @@ class vector {
         ~vector() { delete [] elem; } 
 
         int size() const { return sz; }
-        double * elements() const { return elem; }
-        double get(int index) const { return elem[index]; }
-        void set(int index, double d) { elem[index] = d; }  
+        double& operator[](int n) { return elem[n]; }
+        double operator[](int n) const { return elem[n]; }  
 
 };
 

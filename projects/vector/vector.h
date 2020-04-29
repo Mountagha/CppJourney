@@ -5,6 +5,8 @@ using namespace std;
 class vector {
     int sz;        // the size of the vector
     double *elem;  // a pointer to the elements
+    int space;   // number of elements plus "free space"/"slots"
+                // for new elements ("the current allocation")
     
     public:
         vector();
@@ -17,7 +19,12 @@ class vector {
 
         int size() const { return sz; }
         double& operator[](int n) { return elem[n]; }
-        double operator[](int n) const { return elem[n]; }  
+        double operator[](int n) const { return elem[n]; }
+        int capacity() const { return space; }
+
+        void reserve(int newalloc);
+        void resize(int newsize);
+        void push_back(double d);  
 
 };
 

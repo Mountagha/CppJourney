@@ -1,14 +1,8 @@
 #include "vector.h"
 
-vector::vector(): sz{0}, elem{nullptr}, space{0} {}
-
-vector::vector(int s): sz{s}, elem{new double[s]}, space{sz} {
-    for(int i=0; i<sz; i++)
-        elem[i] = 0; //initialize elements
-}
-
 // copy constructor
-vector::vector(const vector& v): sz{v.size()}, elem{new double[v.size()]}{
+template<typename T>
+vector<T>::vector(const vector& v): sz{v.size()}, elem{new T[v.size()]}{
     //copy(v, v+sz, elem);
     for(int i=0; i<sz; i++){
         elem[i] = v.elem[i];
@@ -16,7 +10,8 @@ vector::vector(const vector& v): sz{v.size()}, elem{new double[v.size()]}{
 }
 
 // copy assignment
-vector& vector::operator=(const vector& v){
+template<typename T>
+vector<T>& vector<T>::operator=(const vector& v){
     // make this vector a copy of v
 
     if(this==&v) return *this;  // self assignment, no work needed
@@ -26,7 +21,7 @@ vector& vector::operator=(const vector& v){
         sz = v.size();
         return *this;
     } 
-    double *p = new double[v.size()];
+    T *p = new T[v.size()];
     for(int i=0; i<v.size(); i++) p[i] = elem[i];
     delete[] elem;
     elem = p;
@@ -35,11 +30,14 @@ vector& vector::operator=(const vector& v){
 }
 
 // move 
-vector::vector(vector&& v): sz{v.sz}, elem{v.elem} {
+template<typename T>
+vector<T>::vector(vector&& v): sz{v.sz}, elem{v.elem} {
     v.sz = 0;
     v.elem = nullptr;
 } 
-vector& vector::operator=(vector&& v){
+
+template<typename T>
+vector<T>& vector<T>::operator=(vector&& v){
     //move v to this vector
     delete [] elem;
     elem = v.elem;
@@ -49,22 +47,25 @@ vector& vector::operator=(vector&& v){
     return *this;
 }
 
-void vector::reserve(int newalloc){
+template<typename T>
+void vector<T>::reserve(int newalloc){
     if(newalloc<=space) return; // never decrease allocation
-    double *p = new double[newalloc];
+    T *p = new T[newalloc];
     for(int i=0; i<sz; i++) p[i] = elem[i];
     delete [] elem;
     elem = p;
     space = newalloc;
 }
 
-void vector::resize(int newsize){
+template<typename T>
+void vector<T>::resize(int newsize){
     reserve(newsize);
     for(int i=sz; i<newsize; i++) elem[i]=0; //initialize new elmts
     sz = newsize;
 }
 
-void vector::push_back(double d){
+template<typename T>
+void vector<T>::push_back(T d){
     //increase vector size by one initialize the new elem with d
     if(space==0)
         reserve(8); //start with space of 8 elements
@@ -74,14 +75,7 @@ void vector::push_back(double d){
     sz++; 
 }
 
-
-ostream& operator<<(ostream& os, const vector& v){
-    for(int i=0; i<v.size(); i++){
-        os << v[i] << " ";
-    }
-    os << "\n";
-    return os;
-}
-
+// To avoid the template linker error
+template class vector<double>;
 
 

@@ -1,9 +1,12 @@
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
-template<typename T>
+template<typename T, typename A=allocator<T>>
 class vector {
+    A alloc;        // allocator to handle the reservation and the freeing of 
+                    // unitiliazed memory
     int sz;        // the size of the vector
     T *elem;      // a pointer to the elements
     int space;   // number of elements plus "free space"/"slots"
@@ -27,8 +30,8 @@ class vector {
         int capacity() const { return space; }
 
         void reserve(int newalloc);
-        void resize(int newsize);
-        void push_back(T d);  
+        void resize(int newsize, T def=T());
+        void push_back(const T& val);  
 
 };
 

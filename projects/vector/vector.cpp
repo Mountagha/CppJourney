@@ -1,8 +1,8 @@
 #include "vector.h"
 
 // copy constructor
-template<typename T>
-vector<T>::vector(const vector& v): sz{v.size()}, elem{new T[v.size()]}{
+template<typename T, typename A>
+vector<T,A>::vector(const vector& v): sz{v.size()}, elem{new T[v.size()]}{
     //copy(v, v+sz, elem);
     for(int i=0; i<sz; i++){
         elem[i] = v.elem[i];
@@ -10,8 +10,8 @@ vector<T>::vector(const vector& v): sz{v.size()}, elem{new T[v.size()]}{
 }
 
 // copy assignment
-template<typename T>
-vector<T>& vector<T>::operator=(const vector& v){
+template<typename T, typename A>
+vector<T, A>& vector<T, A>::operator=(const vector& v){
     // make this vector a copy of v
 
     if(this==&v) return *this;  // self assignment, no work needed
@@ -30,14 +30,14 @@ vector<T>& vector<T>::operator=(const vector& v){
 }
 
 // move 
-template<typename T>
-vector<T>::vector(vector&& v): sz{v.sz}, elem{v.elem} {
+template<typename T, typename A>
+vector<T, A>::vector(vector&& v): sz{v.sz}, elem{v.elem} {
     v.sz = 0;
     v.elem = nullptr;
 } 
 
-template<typename T>
-vector<T>& vector<T>::operator=(vector&& v){
+template<typename T, typename A>
+vector<T, A>& vector<T, A>::operator=(vector&& v){
     //move v to this vector
     delete [] elem;
     elem = v.elem;
@@ -47,31 +47,37 @@ vector<T>& vector<T>::operator=(vector&& v){
     return *this;
 }
 
-template<typename T>
-void vector<T>::reserve(int newalloc){
+template<typename T, typename A>
+void vector<T, A>::reserve(int newalloc){
     if(newalloc<=space) return; // never decrease allocation
-    T *p = new T[newalloc];
-    for(int i=0; i<sz; i++) p[i] = elem[i];
-    delete [] elem;
+    T *p = alloc.allocate(newalloc); // allocate new space
+    for(int i=0; i<sz; i++)
+        alloc.construct(&p[i], elem[i]); // copy
+    for(int i=0; i<sz; i++)
+        alloc.destroy(&elem[i]);    // destroy
+    alloc.deallocate(elem, space);
     elem = p;
     space = newalloc;
 }
 
-template<typename T>
-void vector<T>::resize(int newsize){
+template<typename T, typename A>
+void vector<T, A>::resize(int newsize, T def){
     reserve(newsize);
-    for(int i=sz; i<newsize; i++) elem[i]=0; //initialize new elmts
+    for(int i=sz; i<newsize; i++) //initialize new elmts
+        alloc.construct(&elem[i], def);
+    for(int i=newsize; i<sz; i++)
+        alloc.destroy(&elem[i]);
     sz = newsize;
 }
 
-template<typename T>
-void vector<T>::push_back(T d){
+template<typename T, typename A>
+void vector<T, A>::push_back(const T& val){
     //increase vector size by one initialize the new elem with d
     if(space==0)
         reserve(8); //start with space of 8 elements
     else if(space == sz) // no more space then get more space
         reserve(2*space);
-    elem[sz] = d;
+    alloc.construct(&elem[sz], val);
     sz++; 
 }
 

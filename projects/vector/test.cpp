@@ -2,8 +2,14 @@
 //#include <vector>
 #include <iostream>
 
-using namespace std; 
+using namespace std;
+
 void print_vector(vector<double> v){
+    for(int i=0; i<v.size(); i++) cout << v[i] << " ";
+    cout << "\n";
+}
+
+void print_vector(vector<string> v){
     for(int i=0; i<v.size(); i++) cout << v[i] << " ";
     cout << "\n";
 }
@@ -21,5 +27,14 @@ int main(){
     print_vector(v2);
     v2 = v;
     print_vector(v2);
+    vector<string> vs;
+    vs.push_back("mamadou");
+    //vs.push_back("mountagha");
+    //vs.push_back("bah");
+    //print_vector(vs);
+    //vector<string> vs2;
+    //vs2 = vs;
+    //print_vector(vs2);
     return 0;
+
 }

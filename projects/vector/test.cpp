@@ -15,7 +15,7 @@ void print_vector(vector<string> v){
 }
 
 int main(){
-    vector<double> v;
+    /*vector<double> v;
     v.push_back(6);
     v.push_back(7);
     v.push_back(10);
@@ -26,15 +26,18 @@ int main(){
     v2[2] = 2.3;
     print_vector(v2);
     v2 = v;
-    print_vector(v2);
+    print_vector(v2); */
     vector<string> vs;
     vs.push_back("mamadou");
-    //vs.push_back("mountagha");
-    //vs.push_back("bah");
-    //print_vector(vs);
-    //vector<string> vs2;
-    //vs2 = vs;
-    //print_vector(vs2);
+    vs.push_back("mountagha");
+    vs.push_back("bah");
+    print_vector(vs);
+    vector<string> vs2;
+    vs2.resize(2);
+    vs2 = vs;
+    print_vector(vs2);
+    vs2.push_back("Sow");
+    print_vector(vs2); 
     return 0;
 
 }

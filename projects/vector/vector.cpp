@@ -1,11 +1,13 @@
 #include "vector.h"
+#include <string>
 
 // copy constructor
 template<typename T, typename A>
-vector<T,A>::vector(const vector& v): sz{v.size()}, elem{new T[v.size()]}{
+vector<T,A>::vector(const vector& v): sz{v.size()}, elem{alloc.allocate(v.size())}{
     //copy(v, v+sz, elem);
     for(int i=0; i<sz; i++){
-        elem[i] = v.elem[i];
+        alloc.construct(&elem[i], v.elem[i]);
+        //elem[i] = v.elem[i];
     }
 }
 
@@ -17,13 +19,15 @@ vector<T, A>& vector<T, A>::operator=(const vector& v){
     if(this==&v) return *this;  // self assignment, no work needed
     if(v.size()<=space){          // enough space no need for allocation just copy
         for(int i=0; i<v.size(); i++)
-            elem[i] = v.elem[i];
+            alloc.construct(&elem[i], v.elem[i]); // elem[i] = v.elem[i];
         sz = v.size();
         return *this;
     } 
-    T *p = new T[v.size()];
-    for(int i=0; i<v.size(); i++) p[i] = elem[i];
-    delete[] elem;
+    T *p = alloc.allocate(v.size()); //new T[v.size()];
+    for(int i=0; i<v.size(); i++) alloc.construct(&p[i], v.elem[i]); //p[i] = elem[i];
+    for(int i=0; i<sz; i++) alloc.destroy(&elem[i]);
+    alloc.deallocate(elem, sz);
+    //delete[] elem;
     elem = p;
     space = sz = v.size();
     return *this;
@@ -81,7 +85,19 @@ void vector<T, A>::push_back(const T& val){
     sz++; 
 }
 
+template<typename T, typename A>
+T& vector<T, A>::at(int n) {
+    if(n<0||sz<=n) throw Out_of_range();
+    return elem[n];
+}
+
+template<typename T, typename A>
+const T& vector<T, A>::at(int n) const {
+    if(n<0||sz<=n) throw Out_of_range();
+    return elem[n];
+}
+
 // To avoid the template linker error
-template class vector<double>;
+template class vector<string>;
 
 

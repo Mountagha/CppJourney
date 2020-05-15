@@ -43,6 +43,7 @@ vector<T, A>::vector(vector&& v): sz{v.sz}, elem{v.elem} {
 template<typename T, typename A>
 vector<T, A>& vector<T, A>::operator=(vector&& v){
     //move v to this vector
+    
     delete [] elem;
     elem = v.elem;
     sz = v.sz;

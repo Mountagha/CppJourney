@@ -1,6 +1,7 @@
 #include <iostream>
-#include <memory>
+//#include <memory>
 #include <stdexcept>
+#include "allocator.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ struct Out_of_range {
     Out_of_range(const string& error_message="out of range error") {}
 };
 
-template<typename T, typename A=allocator<T>>
+template<typename T, typename A=Allocator<T>>
 class vector {
     A alloc;        // allocator to handle the reservation and the freeing of 
                     // unitiliazed memory

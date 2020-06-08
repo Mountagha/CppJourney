@@ -1,1 +1,1 @@
-# My journey to mastering Cpp (or at leat trying)
+# My journey to mastering Cpp (or at least trying)

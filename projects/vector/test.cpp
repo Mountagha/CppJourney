@@ -32,12 +32,20 @@ int main(){
     vs.push_back("mountagha");
     vs.push_back("bah");
     print_vector(vs);
+
+    auto it = vs.insert(vs.begin()+1, "Elhadj");
+    print_vector(vs);
+
     vector<string> vs2;
     vs2.resize(2);
     vs2 = vs;
     print_vector(vs2);
     vs2.push_back("Sow");
     print_vector(vs2); 
+    cout << vs2.front() << "\n";
+    cout << vs2.back() << "\n";
+    auto it2 = vs2.erase(vs2.end()-1);
+    print_vector(vs2);
     return 0;
 
 }

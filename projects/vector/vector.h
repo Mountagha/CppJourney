@@ -14,29 +14,41 @@ template<typename T, typename A=Allocator<T>>
 class vector {
     A alloc;        // allocator to handle the reservation and the freeing of 
                     // unitiliazed memory
-    int sz;        // the size of the vector
-    T *elem;      // a pointer to the elements
-    int space;   // number of elements plus "free space"/"slots"
+    unsigned int sz;        // the size of the vector
+    T* elem;      // a pointer to the elements
+    unsigned int space;   // number of elements plus "free space"/"slots"
                 // for new elements ("the current allocation")
     
     public:
+
+        using size_type = unsigned int;
+        using value_type = T;
+        using iterator = T*;
+        using ref_type = T&;
+        using const_ref_type = const T&;
+
+
         vector(): sz{0}, elem{nullptr}, space{0} {}
-        explicit vector(int s, T def=T()): sz{s}, elem{ alloc.allocate(s) }, space{sz} {
+        explicit vector(unsigned int s, T def=T()): sz{s}, elem{ alloc.allocate(s) }, space{sz} {
             for(int i=0; i<sz; i++)
                 alloc.construct(&elem[i], def);
-                //elem[i] = 0; //initialize elements
         }
         vector(const vector&); // copy constructor
         vector& operator=(const vector&); // copy assignment
         vector(vector&& ); // move constructor
         vector& operator=(vector&& );
-        //~vector() { delete [] elem; }
         ~vector() {
             for(int i=0; i<sz; i++) alloc.destroy(&elem[i]);
             alloc.deallocate(elem, sz);
         }
 
-        int size() const { return sz; }
+        size_type size() const { return sz; }
+        iterator begin() { return elem; }
+        const iterator begin() const { return elem; }
+        iterator end() { return elem+sz; }
+        const iterator end() const { return elem+sz; }
+        const_ref_type front() const { return elem[0]; } // ref to the first elem
+        const_ref_type back() const { return elem[sz-1]; } // ref to the last elem
 
         // unchecked range
         T& operator[](int n) { return elem[n]; }
@@ -49,7 +61,10 @@ class vector {
 
         void reserve(int newalloc);
         void resize(int newsize, T def=T());
-        void push_back(const T& val);  
+        void push_back(const T& val);
+
+        iterator insert(iterator p, const T& val);
+        iterator erase(iterator p);  
 
 };
 

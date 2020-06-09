@@ -98,6 +98,34 @@ const T& vector<T, A>::at(int n) const {
     return elem[n];
 }
 
+
+template<typename T, typename A>
+typename vector<T, A>::iterator vector<T,A>::erase(iterator p){
+    if(p==end()) return p;
+    for(auto pos=p+1; pos!=end(); ++p)
+        *(pos-1) = *pos;        // copy element "one position to the left"
+    alloc.destroy(&*(end()-1)); // destroy surplus copy of last element
+    --sz;
+    return p;
+}
+
+template<typename T, typename A>
+typename vector<T, A>::iterator vector<T, A>::insert(iterator p, const T& val){
+    int index = p-begin();
+    if(size()==capacity()) 
+        reserve(size()==0?8:size()*2); // make sure we have enough space
+    //first copy last element into unitialized space
+    alloc.construct(elem+sz, back());
+    ++sz;
+
+    iterator pp = begin()+index; // the place to put val
+    for(auto pos=end()-1; pos!=pp; --pos)
+        *pos = *(pos-1);
+    *(begin()+index) = val;       // insert val
+    return pp;
+
+}
+
 // To avoid the template linker error
 template class vector<string>;
 

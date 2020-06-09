@@ -3,4 +3,5 @@ This is my journey to re-learning C++.Between the time I studied it at universit
 So far I've (partially) reimplemented:
 * [vector](projects/vector)
 * [List](projects/List)
+
 The README will be updated as I progress in my journey. 

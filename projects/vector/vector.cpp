@@ -14,6 +14,16 @@ class vector<T, A>::iterator {
         T& operator*() { return *curr; }
         T& operator[](int n) { return curr[n]; }
         const T& operator[](int n) const { return curr[n]; }
+        iterator operator++(int){
+            iterator tmp{*this};
+            operator++();
+            return tmp;
+        }
+        iterator operator--(int){
+            iterator tmp{*this};
+            operator--();
+            return tmp;
+        }
         friend bool operator==(const iterator&a, const iterator& b){
             return a.curr == b.curr;
         }
@@ -220,7 +230,7 @@ int main(){
     it_b = v_str.end();
     cout << it_a - it_b << "\n";
 
-    for(auto it=v_str.begin(); it != v_str.end(); ++it)
+    for(auto it=v_str.begin(); it != v_str.end(); it++)
         cout << *it << " ";
     cout << "\n";
     return 0;

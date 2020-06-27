@@ -21,18 +21,25 @@ class vector {
     
     public:
 
+        class iterator; 
+
         using size_type = unsigned int;
         using value_type = T;
-        using iterator = T*;
+        //using iterator = T*;
+        //using const_iterator = const T*;
         using ref_type = T&;
         using const_ref_type = const T&;
-
+        
 
         vector(): sz{0}, elem{nullptr}, space{0} {}
         explicit vector(unsigned int s, T def=T()): sz{s}, elem{ alloc.allocate(s) }, space{sz} {
             for(int i=0; i<sz; i++)
                 alloc.construct(&elem[i], def);
         }
+        vector(initializer_list<T> lst): sz(lst.size()), elem{alloc.allocate(lst.size())}, space{sz} {
+            copy(lst.begin(), lst.end(), elem);
+        }
+        
         vector(const vector&); // copy constructor
         vector& operator=(const vector&); // copy assignment
         vector(vector&& ); // move constructor
@@ -43,10 +50,10 @@ class vector {
         }
 
         size_type size() const { return sz; }
-        iterator begin() { return elem; }
-        const iterator begin() const { return elem; }
-        iterator end() { return elem+sz; }
-        const iterator end() const { return elem+sz; }
+        iterator begin();
+        const iterator begin() const;
+        iterator end();
+        const iterator end() const;
         const_ref_type front() const { return elem[0]; } // ref to the first elem
         const_ref_type back() const { return elem[sz-1]; } // ref to the last elem
 

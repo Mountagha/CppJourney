@@ -29,13 +29,12 @@ typename List<Elem>::iterator List<Elem>::end(){
 
 template<class Elem>
 typename List<Elem>::iterator List<Elem>::insert(iterator p, const Elem& v){  // insert v before p
-    cout << "aussi" << "\n";
     Link<Elem>* new_elem = new Link<Elem>(v, p.curr->prev, p.curr);
+    
+    if(p.curr->prev) p.curr->prev->succ = new_elem;
     p.curr->prev = new_elem;
 
-    if(p.curr->prev) p.curr->prev->succ = new_elem;
     if(p.curr == first){
-        cout << "yes: " << *p << "\n";
         --p;
         first = p.curr;
         return p;
@@ -46,11 +45,12 @@ typename List<Elem>::iterator List<Elem>::insert(iterator p, const Elem& v){  //
 
 template<class Elem>
 typename List<Elem>::iterator List<Elem>::erase(iterator p){  // remove p from the list
-    if(p.curr->prev) p.curr->prev->succ = p.curr->succ;
-    if(p.curr->succ) p.curr->succ->prev = p.curr->prev;
-    auto new_iter = ++p;
-    delete p;
-    return new_iter;
+    if(p.curr->prev) p.curr->prev->succ = p.curr->succ; 
+    if(p.curr->succ) p.curr->succ->prev = p.curr->prev; 
+    auto to_delete = p.curr;
+    ++p;
+    delete to_delete;
+    return p;
 }
 
 template<class Elem>
@@ -63,21 +63,23 @@ void List<Elem>::push_back(const Elem& v){
 template<class Elem>
 void List<Elem>::push_front(const Elem& v){
     first = new Link<Elem>(v, nullptr, first);
+    if(first->succ) first->succ->prev = first;
 }
 
 template<class Elem>
 void List<Elem>::pop_back(){
-    auto elem_to_pop = last->prev;
-    last->prev->prev->succ = last;
+    auto to_delete = last->prev;
+    if(last->prev->prev) last->prev->prev->succ = last;
     last->prev = last->prev->prev;
-    delete elem_to_pop;
+    delete to_delete;
 }
 
 template<class Elem>
 void List<Elem>::pop_front(){
-    auto elem_to_pop = first;
+    auto to_delete = first;
     first = first->succ;
-    delete elem_to_pop;
+    first->prev = nullptr;
+    delete to_delete;
 }
 
 template<class Elem>
@@ -87,30 +89,59 @@ Elem& List<Elem>::front(){
 
 template<class Elem>
 Elem& List<Elem>::back(){
-    return last->prev->val;
+    if(last->prev) return last->prev->val;
+    return last->val; // no elem in the list
 }
 
 
 // To avoid the template linker error
 template class Link<string>;
 
+template<class IterF, class IterL>
+void print_all(IterF f, IterL l){
+    for(auto it = f; it != l; ++it)
+        cout << *it << " ";
+    cout << "\n";
+}
 
 int main(){
     List<string> list;
-    cout << (list.begin() == list.end()) << "\n";
     auto it = list.insert(list.begin(), "tete");
+    it = list.insert(it, "tete1");
+    it = list.insert(it, "tete2");
+    list.push_back("other_end");
+    list.push_front("head");
+    
+    print_all(list.begin(), list.end());
+    auto it_next = list.erase(it); 
+    print_all(list.begin(), list.end());
+    list.pop_back();
+    print_all(list.begin(), list.end());
+    list.pop_front();
+    print_all(list.begin(), list.end());
+
+    cout << list.front() << "\n";
+    cout << list.back() << "\n";
+
+    list.pop_front();
+
+    cout << list.front() << "\n";
+    cout << list.back() << "\n";
+
+    list.pop_front();
+
+    cout << list.front() << "\n";
+    cout << list.back() << "\n";
+
+    cout << (list.begin() == list.end()) << "\n";
+    list.push_front("another_head");
     cout << (list.begin() == list.end()) << "\n";
     cout << list.front() << "\n";
     cout << list.back() << "\n";
-    //it = list.insert(it, "tete1");
-    //it = list.insert(it, "tete2");
-    cout << *it << "\n";
-    list.push_back("other_end");
-    //list.push_front("other_front");
-    //List<string>::iterator it3 = list.begin();
-    
-    //for(auto it = list.begin(); it != list.end(); ++it)
-    //    cout << *it << "\n";
+    list.push_back("another_head2");
+    print_all(list.begin(), list.end());
+
+
 
     return 0;
 }
